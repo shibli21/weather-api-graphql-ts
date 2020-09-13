@@ -1,12 +1,13 @@
 import { ApolloServer } from "apollo-server-express";
+import { config } from "dotenv";
 import express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { CurrentWeatherData } from "./resolvers/getCityByName";
+import { CurrentWeatherData } from "./resolvers/CurrentWeatherData";
 
 const main = async () => {
+  config();
   const app = express();
-
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [CurrentWeatherData],
@@ -16,8 +17,9 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app, cors: true });
 
-  app.listen(4001, () => {
-    console.log("[server started at] : http://localhost:4001/graphql");
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => {
+    console.log(`[server started at] : http://localhost:${port}/graphql`);
   });
 };
 
